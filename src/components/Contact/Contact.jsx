@@ -1,5 +1,12 @@
 import s from './Contact.module.css';
-export default function Contact({ data, onDelete }) {
+import { useDispatch } from 'react-redux';
+import { deleteContact } from '../../redux/contactsSlice';
+
+export default function Contact({ data }) {
+  const dispatch = useDispatch();
+  const handleDelete = contactId => {
+    dispatch(deleteContact(contactId));
+  };
   return (
     <div className={s.contact_card}>
       <ul className={s.contact_ul}>
@@ -34,7 +41,7 @@ export default function Contact({ data, onDelete }) {
       </ul>
 
       <div className={s.delete_btn}>
-        <button onClick={() => onDelete(data.id)}>Delete</button>
+        <button onClick={() => handleDelete(data.id)}>Delete</button>
       </div>
     </div>
   );
