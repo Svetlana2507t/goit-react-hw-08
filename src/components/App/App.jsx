@@ -1,54 +1,61 @@
-import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
-import initialContacts from '../../../contacts.json';
+import { useEffect } from 'react';
+//import initialContacts from '../../../contacts.json';
 import s from './App.module.css';
 import SearchBox from '../SearchBox/SearchBox';
 import ContactList from '../ContactList/ContactList';
 import ContactForm from '../ContactForm/ContactForm';
+import { useDispatch, useSelector } from 'react-redux';
+import { add, del } from '../../redux/contactsSlice';
+import { filter } from '../../redux/filtersSlice';
 
 function App() {
-  const [contacts, setContacts] = useState(() => {
-    const savedContacts = localStorage.getItem('contacts');
-    return savedContacts ? JSON.parse(savedContacts) : initialContacts;
-  });
-  const [filter, setFilter] = useState('');
+  const searchFilter = useSelector(state => state.filters.filters.name);
+  //const contacts = useSelector(state => state.contacts.contacts.items);
+  const contacts = useSelector(state => state.contacts.contacts.items);
+  const contactsState = useSelector(state => state.contacts);
 
-  const addContact = newContact => {
-    setContacts(prevContacts => {
-      const isDuplicate = prevContacts.some(
-        contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
-      );
+  const dispatch = useDispatch();
 
-      if (isDuplicate) {
-        alert(`${newContact.name} is already in contacts!`);
-        return prevContacts;
-      }
-      //console.log('Form submitted with values:', newContact);
-      return [...prevContacts, { id: nanoid(), ...newContact }];
-    });
+  const handleAddContact = newContact => {
+    const isDuplicate = contacts.some(
+      contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
+    );
+
+    if (isDuplicate) {
+      alert(`${newContact.name} is already in contacts!`);
+      return;
+    }
+
+    dispatch(add({ id: nanoid(), ...newContact }));
   };
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
 
-  const deleteContact = contactId => {
-    console.log('Deleted contact:', contactId);
-    setContacts(prevContacts => {
-      return prevContacts.filter(contact => contact.id !== contactId);
-    });
+  const handleSearch = value => {
+    dispatch(filter(value));
+  };
+
+  const handleDeleteContact = contactId => {
+    dispatch(del(contactId));
   };
 
   const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
+    contact.name.toLowerCase().includes(searchFilter.toLowerCase())
   );
+
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contactsState));
+  }, [contactsState]);
 
   return (
     <div className={s.container}>
       <h1 className={s.uppercase}>Phonebook</h1>
-      <ContactForm onAdd={addContact} />
-      <SearchBox value={filter} onSearch={setFilter} />
+      <ContactForm onAdd={handleAddContact} />
+      <SearchBox value={searchFilter} onSearch={handleSearch} />
       {filteredContacts.length > 0 ? (
-        <ContactList contacts={filteredContacts} onDelete={deleteContact} />
+        <ContactList
+          contacts={filteredContacts}
+          onDelete={handleDeleteContact}
+        />
       ) : (
         <p>Sorry, there are no contacts matching your search.</p>
       )}
