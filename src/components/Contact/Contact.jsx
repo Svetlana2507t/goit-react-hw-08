@@ -1,11 +1,13 @@
 import s from './Contact.module.css';
 import { useDispatch } from 'react-redux';
-import { deleteContact } from '../../redux/contactsSlice';
+import { deleteContacts } from '../../redux/contactsOps';
 
 export default function Contact({ data }) {
   const dispatch = useDispatch();
-  const handleDelete = contactId => {
-    dispatch(deleteContact(contactId));
+  // console.log('data:', data);
+
+  const handleDelete = id => {
+    dispatch(deleteContacts(id));
   };
   return (
     <div className={s.contact_card}>

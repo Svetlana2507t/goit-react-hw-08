@@ -9,12 +9,10 @@ const slice = createSlice({
   reducers: {
     changeFilter: (state, action) => {
       state.name = action.payload;
-      // state.contacts.items = state.contacts.items.filter(item =>
-      //   item.name.toLowerCase().includes(action.payload.toLowerCase())
-      //);
     },
   },
 });
 
 export const filtersSliceReducer = slice.reducer;
 export const { changeFilter } = slice.actions;
+export const selectNameFilter = state => state.filters.name;
