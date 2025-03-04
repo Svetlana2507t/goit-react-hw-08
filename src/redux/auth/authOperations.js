@@ -11,8 +11,8 @@ export const setAuthHeader = token => {
 };
 
 export const clearAuthHeader = () => {
-  apiAuth.defaults.headers.common.Authorization = ``;
-};
+  delete apiAuth.defaults.headers.common.Authorization;
+}; // delete, not ='';
 
 export const registerThunk = createAsyncThunk(
   'auth/register',
@@ -67,14 +67,22 @@ export const logoutThunk = createAsyncThunk(
 
 export const getCurrentThunk = createAsyncThunk(
   'auth/current',
-  async (body, thunkAPI) => {
+  async (_, thunkAPI) => {
+    const token = thunkAPI.getState().auth.token;
+    if (!token) {
+      return thunkAPI.rejectWithValue('No token found');
+    }
     try {
-      console.log('Get current user info:', body);
-      const { data } = await apiAuth.get('users/current', body);
-      console.log('Response data:', data);
+      setAuthHeader(token);
+      console.log('!!!getCurrentThunk is run!!!');
+      const { data } = await apiAuth.get('users/current');
+      console.log('Get current user info:', data);
       return data;
     } catch (error) {
-      console.error('Error:', error.response?.data || error.message);
+      console.error(
+        'Error fetching Current User:',
+        error.response?.data?.message || error.message
+      );
       return thunkAPI.rejectWithValue(error.message);
     }
   }
