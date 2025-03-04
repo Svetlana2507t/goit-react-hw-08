@@ -1,7 +1,7 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import s from './ContactForm.module.css';
-import { addContacts } from '../../redux/contacts/contactsOps';
+import { addContacts } from '../../redux/contacts/operations';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectContactsState } from '../../redux/contacts/contactsSlice';
 
@@ -26,18 +26,19 @@ function ContactsForm() {
 
   const dispatch = useDispatch();
 
-  const handleSubmit = (values, actions) => {
+  //const handleSubmit = (values, actions) => {
+  const handleSubmit = (values, options) => {
     const isDuplicate = contacts.some(
       contact => contact.name.toLowerCase() === values.name.trim().toLowerCase()
     );
     if (isDuplicate) {
       alert(`${values.name} is already in contacts!`);
-      actions.resetForm();
+      options.resetForm();
       return;
     }
     dispatch(addContacts(values));
 
-    actions.resetForm();
+    options.resetForm();
   };
 
   return (

@@ -6,6 +6,14 @@ export const apiAuth = axios.create({
 });
 //axios.defaults.baseURL = `https://connections-api.goit.global/`;
 
+export const setAuthHeader = token => {
+  apiAuth.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+};
+
+export const clearAuthHeader = () => {
+  apiAuth.defaults.headers.common.Authorization = ``;
+};
+
 export const registerThunk = createAsyncThunk(
   'auth/register',
   async (body, thunkAPI) => {
@@ -14,6 +22,7 @@ export const registerThunk = createAsyncThunk(
       const { data } = await apiAuth.post('users/signup', body);
       //const { data } = await axios.post('users/signup', body);
       console.log('Response data:', data);
+      setAuthHeader(data.token);
       return data;
     } catch (error) {
       console.error('Error:', error.response?.data || error.message);
@@ -32,6 +41,7 @@ export const loginThunk = createAsyncThunk(
       console.log('Log-in:', body);
       const { data } = await apiAuth.post('users/login', body);
       console.log('Response data:', data);
+      setAuthHeader(data.token);
       return data;
     } catch (error) {
       console.error('Error:', error.response?.data || error.message);
@@ -42,11 +52,11 @@ export const loginThunk = createAsyncThunk(
 
 export const logoutThunk = createAsyncThunk(
   'auth/logout',
-  async (body, thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
-      console.log('Log-out:', body);
-      const { data } = await apiAuth.post('users/logout', body);
-      console.log('Response data:', data);
+      console.log('logoutThunk launched to log-out');
+      const { data } = await apiAuth.post('users/logout');
+      clearAuthHeader();
       return data;
     } catch (error) {
       console.error('Error:', error.response?.data || error.message);
@@ -69,15 +79,3 @@ export const getCurrentThunk = createAsyncThunk(
     }
   }
 );
-
-// export const fetchContacts = createAsyncThunk(
-//   'contacts/fetchAll',
-//   async (_, thunkAPI) => {
-//     try {
-//       const { data } = await apiAuth.get('/contacts');
-//       return data;
-//     } catch (error) {
-//       return thunkAPI.rejectWithValue(error.message);
-//     } //
-//   }
-// );

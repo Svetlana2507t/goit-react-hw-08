@@ -12,10 +12,15 @@
   background-color: #f8f9fa;
   border-bottom: 2px solid #ddd;
 }
-
+.header_heading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
 h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: rgba(0, 123, 255, 0.2);
   font-family: 'Playfair Display', serif;
   font-style: italic;

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { registerThunk } from './authOperations';
-import { loginThunk } from './authOperations';
+import { loginThunk, logoutThunk } from './authOperations';
 
 const initialState = {
   //not contact! user!
@@ -33,9 +33,15 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = null;
       })
+
+      .addCase(logoutThunk.fulfilled, () => {
+        initialState;
+        console.log('Logout success!');
+      })
       .addCase(registerThunk.pending, state => {
         state.loading = true;
       })
+
       .addCase(loginThunk.pending, state => {
         state.loading = true;
       })
@@ -43,6 +49,14 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(loginThunk.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+
+      .addCase(logoutThunk.pending, state => {
+        state.loading = true;
+      })
+
+      .addCase(logoutThunk.rejected, (state, action) => {
         state.error = action.payload;
       });
   },

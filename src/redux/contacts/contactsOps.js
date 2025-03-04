@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const apiContacts = axios.create({
@@ -12,15 +11,12 @@ export const fetchContacts = createAsyncThunk(
   //async ({ signal }, thunkAPI) => {
   async (_, thunkAPI) => {
     try {
-      console.log('🚀 Sending API request...');
       const response = await axios.get(
         `https://api.allorigins.win/get?url=${encodeURIComponent(
           'https://67b4a19ca9acbdb38ecfc7e8.mockapi.io/contacts/contacts'
         )}`
       );
-      console.log('✅ API Response:', response);
       const parsedData = JSON.parse(response.data.contents);
-      console.log('🎯 Parsed Contacts:', parsedData);
 
       // const response = await apiContacts.get('/contacts', { signal });
       console.log('API Response:', response);
