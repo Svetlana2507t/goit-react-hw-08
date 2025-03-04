@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchContacts } from './contactsOps';
-import { addContacts, deleteContacts } from './contactsOps';
+import { addContacts, deleteContacts, editContact } from './contactsOps';
 import { createSelector } from '@reduxjs/toolkit';
-import { selectNameFilter } from './filtersSlice';
+import { selectNameFilter } from '../filters/filtersSlice';
 
 const initialState = {
   items: [],
@@ -21,8 +21,10 @@ const contactsSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchContacts.fulfilled, (state, action) => {
+        console.log('fetchContacts.fulfilled: Data received:', action.payload);
         state.loading = false;
         state.error = null;
+        //state.items = action.payload;
         state.items = action.payload || [];
       })
       .addCase(fetchContacts.rejected, (state, action) => {
@@ -38,6 +40,7 @@ const contactsSlice = createSlice({
         state.items.push(action.payload);
       })
       .addCase(addContacts.rejected, (state, action) => {
+        console.error('fetchContacts.rejected: Error:', action.payload);
         state.loading = false;
         state.error = action.payload;
       })
@@ -52,6 +55,14 @@ const contactsSlice = createSlice({
       .addCase(deleteContacts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(editContact.fulfilled, (state, action) => {
+        const index = state.items.findIndex(
+          contact => contact.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.items[index] = action.payload;
+        }
       });
   },
 });
@@ -70,15 +81,22 @@ export const selectError = createSelector(
   contacts => contacts.error
 );
 
-//export const selectContacts = state => state.contacts?.items || [];
-//export const selectLoading = state => state.contacts.loading;
-//export const selectError = state => state.contacts.error;
-
 export const selectFilteredContacts = createSelector(
   [state => selectContactsState(state)?.items || [], selectNameFilter],
   (contacts, nameFilter) => {
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(nameFilter.trim().toLowerCase())
-    );
+    return contacts.length > 0
+      ? contacts.filter(contact =>
+          contact.name.toLowerCase().includes(nameFilter.trim().toLowerCase())
+        )
+      : [];
   }
 );
+
+// export const selectFilteredContacts = createSelector(
+//   [state => selectContactsState(state)?.items || [], selectNameFilter],
+//   (contacts, nameFilter) => {
+//     return contacts.filter(contact =>
+//       contact.name.toLowerCase().includes(nameFilter.trim().toLowerCase())
+//     );
+//   }
+// );

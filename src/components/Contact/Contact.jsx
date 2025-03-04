@@ -1,11 +1,13 @@
 import s from './Contact.module.css';
 import { useDispatch } from 'react-redux';
-import { deleteContacts } from '../../redux/contactsOps';
+import { deleteContacts, editContact } from '../../redux/contacts/contactsOps';
 
 export default function Contact({ data }) {
   const dispatch = useDispatch();
   // console.log('data:', data);
-
+  const handleChange = id => {
+    dispatch(editContact(id));
+  };
   const handleDelete = id => {
     dispatch(deleteContacts(id));
   };
@@ -43,6 +45,7 @@ export default function Contact({ data }) {
       </ul>
 
       <div className={s.delete_btn}>
+        <button onClick={() => handleChange(data.id)}>Edit</button>
         <button onClick={() => handleDelete(data.id)}>Delete</button>
       </div>
     </div>

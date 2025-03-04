@@ -7,30 +7,9 @@ import Login from '../../pages/Login/Login';
 import Register from '../../pages/Register/Register';
 import NotFound from '../../pages/NotFound/NotFound';
 
-// import SearchBox from '../SearchBox/SearchBox';
-// import ContactList from '../ContactList/ContactList';
-// import ContactForm from '../ContactForm/ContactsForm';
-import { useDispatch } from 'react-redux';
-// import { selectError, selectLoading } from '../../redux/contactsSlice';
-import { useEffect, useRef } from 'react';
-import { fetchContacts } from '../../redux/contactsOps';
+//import { fetchContacts } from '../../redux/contactsOps';
 
 function App() {
-  const dispatch = useDispatch();
-  // const loading = useSelector(selectLoading);
-  // const error = useSelector(selectError);
-  const isFetching = useRef(false);
-
-  useEffect(() => {
-    if (isFetching.current) return;
-    isFetching.current = true;
-    const abortController = new AbortController();
-
-    dispatch(fetchContacts({ signal: abortController.signal }));
-    return () => {
-      abortController.abort();
-    };
-  }, [dispatch]);
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
@@ -48,7 +27,7 @@ function App() {
     // <SearchBox />
     // {loading && !error && <b>Request in progress...</b>}
     // <ContactList /> */}
-    // </div>
+    // <div />
   );
 }
 
