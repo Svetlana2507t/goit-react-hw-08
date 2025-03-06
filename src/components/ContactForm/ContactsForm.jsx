@@ -1,9 +1,10 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import s from './ContactForm.module.css';
-import { addContacts } from '../../redux/contacts/operations';
 import { useDispatch, useSelector } from 'react-redux';
+import { useCallback } from 'react';
 import { selectContactsState } from '../../redux/contacts/contactsSlice';
+import { addContacts } from '../../redux/contacts/operations';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -17,9 +18,7 @@ const validationSchema = Yup.object().shape({
     .required('Phone number is required'),
 });
 
-function ContactsForm() {
-  //const contacts = useSelector(state => state.contacts.items);
-
+function ContactsForm({ onSubmit, initialValues = { name: '', number: '' } }) {
   const contacts = useSelector(
     state => selectContactsState(state)?.items || []
   );
@@ -27,57 +26,66 @@ function ContactsForm() {
   const dispatch = useDispatch();
 
   //const handleSubmit = (values, actions) => {
-  const handleSubmit = (values, options) => {
-    const isDuplicate = contacts.some(
-      contact => contact.name.toLowerCase() === values.name.trim().toLowerCase()
-    );
-    if (isDuplicate) {
-      alert(`${values.name} is already in contacts!`);
-      options.resetForm();
-      return;
-    }
-    dispatch(addContacts(values));
+  const defaultHandleSubmit = useCallback(
+    (values, options) => {
+      const isDuplicate = contacts.some(
+        contact =>
+          contact.name.toLowerCase() === values.name.trim().toLowerCase()
+      );
+      if (isDuplicate) {
+        alert(`${values.name} is already in contacts!`);
+        options.resetForm();
+        return;
+      }
+      dispatch(addContacts(values));
 
-    options.resetForm();
-  };
+      options.resetForm();
+    },
+    [contacts, dispatch]
+  );
 
   return (
     <Formik
-      initialValues={{ name: '', number: '' }}
+      initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={handleSubmit}
+      onSubmit={onSubmit || defaultHandleSubmit}
+      enableReinitialize
     >
-      <Form className={s.formWrapper}>
-        <div>
-          <label htmlFor="name">Name:</label>
-          <Field
-            type="text"
-            id="name"
-            name="name"
-            autoComplete="name"
-            required
-            className={s.input}
-          />
-          <ErrorMessage name="name" component="div" className={s.error} />
-        </div>
+      {({ isSubmitting }) => (
+        <Form className={s.formWrapper}>
+          <div>
+            <label htmlFor="name">Name:</label>
+            <Field
+              type="text"
+              id="name"
+              name="name"
+              autoComplete="name"
+              required
+              className={s.input}
+            />
+            <ErrorMessage name="name" component="div" className={s.error} />
+          </div>
 
-        <div>
-          <label htmlFor="number">Number:</label>
-          <Field
-            type="tel"
-            id="number"
-            name="number"
-            autoComplete="tel"
-            required
-            className={s.input}
-          />
-          <ErrorMessage name="number" component="div" className={s.error} />
-        </div>
+          <div>
+            <label htmlFor="number" aria-label="Enter contact number">
+              Number:
+            </label>
+            <Field
+              type="tel"
+              id="number"
+              name="number"
+              autoComplete="tel"
+              required
+              className={s.input}
+            />
+            <ErrorMessage name="number" component="div" className={s.error} />
+          </div>
 
-        <button type="submit" className={s.button}>
-          Add contact
-        </button>
-      </Form>
+          <button type="submit" className={s.button}>
+            {isSubmitting ? 'Adding...' : 'Add Contact'}
+          </button>
+        </Form>
+      )}
     </Formik>
   );
 }

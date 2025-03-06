@@ -19,9 +19,41 @@ export const clearContactsHeader = () => {
   console.log('🔓 Contacts Auth headers cleared.');
 };
 
+// export const fetchContacts = createAsyncThunk(
+//   'contacts/fetchAll',
+//   async ({ signal }, thunkAPI) => {
+//     try {
+//       const token = thunkAPI.getState().auth.token;
+//       if (!token) {
+//         console.warn('🚨 No token found. User might not be logged in.');
+//         return thunkAPI.rejectWithValue('No authentication token found');
+//       }
+//       //set token:
+//       setContactsHeader(token);
+
+//       console.log('🚀 Fetching contacts with token:', token);
+
+//       const res = await apiContacts.get('/contacts', { signal });
+
+//       console.log('✅ API Response:', res);
+//       console.log('✅ Contacts fetched:', res.data);
+
+//       return res.data;
+//     } catch (error) {
+//       if (axios.isCancel(error)) {
+//         console.log('Request cancelled with AbortController');
+//       } else {
+//         console.error('Error fetching contacts:', error);
+
+//         return thunkAPI.rejectWithValue(error.message);
+//       }
+//     }
+//   }
+// );
+
 export const fetchContacts = createAsyncThunk(
   'contacts/fetchAll',
-  async ({ signal }, thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.token;
       if (!token) {
@@ -33,8 +65,9 @@ export const fetchContacts = createAsyncThunk(
 
       console.log('🚀 Fetching contacts with token:', token);
 
-      const res = await apiContacts.get('/contacts', { signal });
+      const res = await apiContacts.get('/contacts');
 
+      console.log('✅ API Response:', res);
       console.log('✅ Contacts fetched:', res.data);
 
       return res.data;
@@ -43,6 +76,7 @@ export const fetchContacts = createAsyncThunk(
         console.log('Request cancelled with AbortController');
       } else {
         console.error('Error fetching contacts:', error);
+
         return thunkAPI.rejectWithValue(error.message);
       }
     }

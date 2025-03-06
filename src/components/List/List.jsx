@@ -12,33 +12,37 @@ import ContactsForm from '../ContactForm/ContactsForm';
 import { fetchContacts } from '../../redux/contacts/operations';
 import { addContacts } from '../../redux/contacts/operations';
 import Modal from '../Modal/Modal';
-import { selectToken, selectIsLoggedIn } from '../../redux/auth/selectors';
+// import { selectToken, selectIsLoggedIn } from '../../redux/auth/selectors';
 
 function List() {
-  const [hasFetched, setHasFetched] = useState(false);
+  // const [hasFetched, setHasFetched] = useState(false);
   //const isFetching = useRef(false);
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  // const isLoggedIn = useSelector(selectIsLoggedIn);
   const [isOpen, setIsOpen] = useState(false);
   const contacts = useSelector(selectFilteredContacts);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
-  const token = useSelector(selectToken);
+  // const token = useSelector(selectToken);
 
   useEffect(() => {
-    if (!token || hasFetched) return;
-    setHasFetched(true);
-    //if (!token || isFetching.current) return;
-    // isFetching.current = true;
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
-    const abortController = new AbortController();
+  // useEffect(() => {
+  //   // if (!token || hasFetched) return;
+  //   setHasFetched(true);
+  //   //if (!token || isFetching.current) return;
+  //   // isFetching.current = true;
 
-    dispatch(fetchContacts({ signal: abortController.signal }));
+  //   const abortController = new AbortController();
 
-    return () => {
-      abortController.abort();
-    };
-  }, [dispatch, isLoggedIn, token, hasFetched]);
+  //   dispatch(fetchContacts({ signal: abortController.signal }));
+
+  //   return () => {
+  //     abortController.abort();
+  //   };
+  // }, [dispatch, isLoggedIn, token, hasFetched]);
 
   const handleSubmit = (values, options) => {
     dispatch(addContacts(values));

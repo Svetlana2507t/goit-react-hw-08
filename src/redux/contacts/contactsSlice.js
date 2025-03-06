@@ -21,7 +21,11 @@ const contactsSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchContacts.fulfilled, (state, action) => {
-        console.log('fetchContacts.fulfilled: Data received:', action.payload);
+        console.log(
+          '📩 fetchContacts.fulfilled: Data received:',
+          action.payload
+        );
+
         state.loading = false;
         state.error = null;
         //state.items = action.payload;
