@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchContacts } from './contactsOps';
-import { addContacts, deleteContacts, editContact } from './contactsOps';
+import { addContacts, deleteContacts, editContact } from './operations';
 import { createSelector } from '@reduxjs/toolkit';
 import { selectNameFilter } from '../filters/filtersSlice';
 
@@ -14,6 +14,13 @@ const contactsSlice = createSlice({
   name: 'contacts',
 
   initialState,
+
+  reducers: {
+    resetContacts: state => {
+      state.items = [];
+      state.filteredContacts = [];
+    },
+  },
 
   extraReducers: builder => {
     builder
@@ -61,6 +68,9 @@ const contactsSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(editContact.fulfilled, (state, action) => {
+        console.log('editContact fulfilled!');
+        console.log('Updating contact with ID:', action.payload.id);
+
         const index = state.items.findIndex(
           contact => contact.id === action.payload.id
         );
@@ -95,6 +105,8 @@ export const selectFilteredContacts = createSelector(
       : [];
   }
 );
+
+export const { resetContacts } = contactsSlice.actions;
 
 // export const selectFilteredContacts = createSelector(
 //   [state => selectContactsState(state)?.items || [], selectNameFilter],

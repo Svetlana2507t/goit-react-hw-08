@@ -70,3 +70,8 @@ export const editContact = createAsyncThunk(
     }
   }
 );
+
+export const resetContacts = state => {
+  state.contacts = [];
+  state.filteredContacts = [];
+};

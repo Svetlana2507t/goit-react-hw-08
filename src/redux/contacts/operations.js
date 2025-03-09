@@ -121,9 +121,14 @@ export const editContact = createAsyncThunk(
   'contacts/editContact',
   async ({ id, updatedData }, thunkAPI) => {
     try {
+      console.log('Editing contact id:', id);
+
       const response = await apiContacts.patch(`/contacts/${id}`, updatedData);
+      console.log('updatedData: response', response);
+
       return response.data;
     } catch (error) {
+      console.error('Error editing contact:', error);
       return thunkAPI.rejectWithValue(error.message);
     }
   }

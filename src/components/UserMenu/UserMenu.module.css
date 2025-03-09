@@ -5,12 +5,14 @@
   z-index: 99;
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   /* right not center; */
   justify-content: right;
+  align-content: baseline;
   gap: 20px;
   padding: 10px 20px;
   background-color: #f8f9fa;
-  border-bottom: 2px solid #ddd;
+  /* border-bottom: 2px solid #ddd; */
 }
 .header_heading {
   display: flex;
@@ -53,6 +55,17 @@ h3 {
   font-weight: bold;
   color: #0056b3;
   border-bottom: 2px solid #0056b3;
+}
+
+._button {
+  background-color: #007bff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 @media (max-width: 768px) {

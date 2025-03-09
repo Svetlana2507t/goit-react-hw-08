@@ -1,14 +1,18 @@
 import s from './Contact.module.css';
 import { useDispatch } from 'react-redux';
-import { deleteContacts, editContact } from '../../redux/contacts/contactsOps';
+import { deleteContacts, editContact } from '../../redux/contacts/operations';
 
 export default function Contact({ data }) {
   const dispatch = useDispatch();
   // console.log('data:', data);
   const handleChange = id => {
-    dispatch(editContact(id));
+    console.log('Dispatching editContact with ID:', id);
+    dispatch(
+      editContact({ id, updatedData: { name: 'New Name', number: '1234' } })
+    );
   };
   const handleDelete = id => {
+    console.log('Dispatching editContact with ID:', id);
     dispatch(deleteContacts(id));
   };
   return (

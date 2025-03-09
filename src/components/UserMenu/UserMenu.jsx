@@ -2,6 +2,7 @@ import s from './UserMenu.module.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectIsLoggedIn, selectUser } from '../../redux/auth/selectors';
 import { logoutThunk } from '../../redux/auth/authOperations';
+import { resetContacts } from '../../redux/contacts/contactsSlice';
 
 const UserMenu = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -11,13 +12,14 @@ const UserMenu = () => {
 
   return (
     <div className={s.usermenu_wrap}>
-      <h2>Welcome </h2>
-      <h3>{` ${user.email}`}</h3>
+      <h3 className={s.header_heading}>Welcome, {` ${user.email}!`}</h3>
 
       {isLoggedIn && (
         <button
+          className={s._button}
           onClick={() => {
             dispatch(logoutThunk());
+            dispatch(resetContacts());
           }}
         >
           Logout
