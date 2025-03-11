@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import s from './Modal.module.css';
-const Modal = ({ children, title = 'Default modal', closeModal }) => {
+const Modal = ({ children, title = 'Edit contact', closeModal }) => {
   const handleBackdropClick = e => {
     if (e.target === e.currentTarget) {
       closeModal();

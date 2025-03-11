@@ -1,18 +1,35 @@
 import s from './Contact.module.css';
 import { useDispatch } from 'react-redux';
 import { deleteContacts, editContact } from '../../redux/contacts/operations';
+import { useState } from 'react';
+import ContactsForm from '../ContactForm/ContactsForm';
+import Modal from '../Modal/Modal';
 
-export default function Contact({ data }) {
+export default function Contact({ data, onEdit }) {
   const dispatch = useDispatch();
-  // console.log('data:', data);
-  const handleChange = id => {
-    console.log('Dispatching editContact with ID:', id);
-    dispatch(
-      editContact({ id, updatedData: { name: 'New Name', number: '1234' } })
-    );
+  const [isOpen, setIsOpen] = useState(false);
+  // const [currentContact, setCurrentContact] = useState(null);
+  // const handleChange = id => {
+  //   console.log('Dispatching editContact with ID:', id);
+  //   //setCurrentContact(data);
+  //   setIsOpen(true);
+  // };
+
+  const closeModal = () => {
+    setIsOpen(false);
   };
+
+  // const handleSubmit = updatedData => {
+  //   dispatch(editContact({ id: currentContact.id, updatedData }));
+  //   closeModal();
+  // };
+  const handleEdit = () => {
+    setIsOpen(true);
+    onEdit(data);
+  };
+
   const handleDelete = id => {
-    console.log('Dispatching editContact with ID:', id);
+    console.log('Dispatching deleteContact with ID:', id);
     dispatch(deleteContacts(id));
   };
   return (
@@ -49,9 +66,33 @@ export default function Contact({ data }) {
       </ul>
 
       <div className={s.delete_btn}>
-        <button onClick={() => handleChange(data.id)}>Edit</button>
+        <button
+          onClick={() => {
+            handleEdit();
+          }}
+        >
+          Edit
+        </button>
         <button onClick={() => handleDelete(data.id)}>Delete</button>
       </div>
+
+      {/* Modal */}
+      {isOpen && (
+        <Modal closeModal={closeModal}>
+          <ContactsForm
+            //handleSubmit={handleSubmit}
+            initialValues={{
+              name: data?.name,
+              number: data?.number,
+            }}
+            onSubmit={(values, options) => {
+              dispatch(editContact({ id: data.id, updatedData: values }));
+              closeModal();
+              options.resetForm();
+            }}
+          />
+        </Modal>
+      )}
     </div>
   );
 }

@@ -122,6 +122,7 @@ export const editContact = createAsyncThunk(
   async ({ id, updatedData }, thunkAPI) => {
     try {
       console.log('Editing contact id:', id);
+      console.log('Updated contact data:', updatedData);
 
       const response = await apiContacts.patch(`/contacts/${id}`, updatedData);
       console.log('updatedData: response', response);
