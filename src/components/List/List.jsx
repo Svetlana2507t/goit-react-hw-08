@@ -37,6 +37,7 @@ function List() {
       dispatch(addContacts(values));
     }
     options.resetForm();
+    setCurrentContact(null);
   };
 
   return (

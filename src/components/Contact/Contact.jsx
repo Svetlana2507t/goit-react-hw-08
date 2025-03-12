@@ -90,6 +90,8 @@ export default function Contact({ data, onEdit }) {
               closeModal();
               options.resetForm();
             }}
+            currentContact={data}
+            isOpen={isOpen}
           />
         </Modal>
       )}

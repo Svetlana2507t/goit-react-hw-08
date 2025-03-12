@@ -22,6 +22,7 @@ function ContactsForm({
   onSubmit,
   initialValues = { name: '', number: '' },
   currentContact,
+  isOpen,
 }) {
   const contacts = useSelector(
     state => selectContactsState(state)?.items || []
@@ -100,9 +101,9 @@ function ContactsForm({
           <button type="submit" className={s.button}>
             {isSubmitting
               ? 'Saving...'
-              : currentContact
-              ? 'Update Contact'
-              : 'Add Contact'}
+              : isOpen
+              ? 'Update contact'
+              : 'Add contact'}
           </button>
         </Form>
       )}
