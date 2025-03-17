@@ -1,10 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import s from './ContactForm.module.css';
-import { useDispatch, useSelector } from 'react-redux';
-//import { useCallback } from 'react';
-import { selectContactsState } from '../../redux/contacts/contactsSlice';
-import { addContacts, editContact } from '../../redux/contacts/operations';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -22,50 +18,16 @@ function ContactsForm({
   onSubmit,
   initialValues = { name: '', number: '' },
   currentContact,
-  isOpen,
 }) {
-  const contacts = useSelector(
-    state => selectContactsState(state)?.items || []
-  );
-
-  const dispatch = useDispatch();
-
-  const defaultHandleSubmit = (values, options) => {
-    const isDuplicate = contacts.some(
-      contact =>
-        contact.name.toLowerCase() === values.name.trim().toLowerCase() &&
-        contact.id !== currentContact?.id
-    );
-    if (isDuplicate) {
-      alert(`${values.name} is already in contacts!`);
-      options.resetForm();
-      return;
-    }
-
-    if (currentContact) {
-      console.log(
-        'Dispatching editContact with ID and data:',
-        currentContact.id,
-        values
-      );
-      console.log(
-        'Dispatching editContact with ID and data:',
-        currentContact?.id,
-        values
-      );
-
-      dispatch(editContact({ id: currentContact.id, updatedData: values }));
-    } else {
-      dispatch(addContacts(values));
-    }
-
-    options.resetForm();
-  };
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={onSubmit || defaultHandleSubmit}
+      onSubmit={(values, options) => {
+        console.log('onSubmit called in Formik');
+        onSubmit(values, options);
+        options.resetForm();
+      }}
       enableReinitialize
     >
       {({ isSubmitting }) => (
@@ -101,7 +63,7 @@ function ContactsForm({
           <button type="submit" className={s.button}>
             {isSubmitting
               ? 'Saving...'
-              : isOpen
+              : currentContact
               ? 'Update contact'
               : 'Add contact'}
           </button>

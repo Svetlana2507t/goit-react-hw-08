@@ -6,10 +6,17 @@ import Contacts from '../../pages/Contacts/Contacts';
 import Login from '../../pages/Login/Login';
 import Register from '../../pages/Register/Register';
 import NotFound from '../../pages/NotFound/NotFound';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { refreshUser } from '../../redux/auth/authOperations';
 
 //import { fetchContacts } from '../../redux/contactsOps';
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(refreshUser());
+  }, [dispatch]);
   return (
     <Routes>
       <Route path="/" element={<Layout />}>

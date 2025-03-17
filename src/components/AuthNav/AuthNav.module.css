@@ -31,7 +31,13 @@
 .active {
   font-weight: bold;
   color: #0056b3;
+
+  background-color: rgba(0, 123, 255, 0.56);
   border-bottom: 2px solid #0056b3;
+}
+
+.auth_wrap .active {
+  background-color: rgba(0, 123, 255, 0.56);
 }
 
 @media (max-width: 768px) {

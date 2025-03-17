@@ -15,7 +15,7 @@ import {
   editContact,
 } from '../../redux/contacts/operations';
 
-function List() {
+export default function List() {
   const dispatch = useDispatch();
   const contacts = useSelector(selectFilteredContacts);
   const loading = useSelector(selectLoading);
@@ -31,13 +31,25 @@ function List() {
   };
 
   const handleSubmit = (values, options) => {
+    console.log('handleSubmit is called in List');
+    console.log('Form values before reset:', values);
+
     if (currentContact) {
-      dispatch(editContact({ id: currentContact.id, updatedData: values }));
+      dispatch(
+        editContact({ id: currentContact.id, updatedData: values })
+      ).then(() => {
+        console.log('Before resetting, currentContact:', currentContact);
+        setCurrentContact(null);
+        console.log('After resetting, currentContact:', currentContact);
+        console.log('Now reset the form!');
+        options.resetForm();
+        console.log('Form has been reset');
+      });
     } else {
-      dispatch(addContacts(values));
+      dispatch(addContacts(values)).then(() => {
+        options.resetForm();
+      });
     }
-    options.resetForm();
-    setCurrentContact(null);
   };
 
   return (
@@ -60,4 +72,3 @@ function List() {
     </div>
   );
 }
-export default List;

@@ -1,5 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { loginThunk, logoutThunk, registerThunk } from './authOperations';
+import {
+  loginThunk,
+  logoutThunk,
+  registerThunk,
+  refreshUser,
+} from './authOperations';
 
 const initialState = {
   user: {
@@ -35,11 +40,13 @@ const authSlice = createSlice({
       .addCase(logoutThunk.fulfilled, () => {
         console.log('Logout success!');
         return initialState;
-        // state.user = { name: '', email: '' };
-        // state.isLoggedIn = false;
-        // state.loading = false;
-        // state.error = null;
+
         //state.token = null;
+      })
+
+      .addCase(refreshUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isLoggedIn = true;
       })
       .addCase(registerThunk.pending, state => {
         state.loading = true;
@@ -48,6 +55,14 @@ const authSlice = createSlice({
       .addCase(loginThunk.pending, state => {
         state.loading = true;
       })
+
+      .addCase(logoutThunk.pending, state => {
+        state.loading = true;
+      })
+      .addCase(refreshUser.pending, state => {
+        state.loading = true;
+      })
+
       .addCase(registerThunk.rejected, (state, action) => {
         state.error = action.payload;
       })
@@ -55,11 +70,11 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
-      .addCase(logoutThunk.pending, state => {
-        state.loading = true;
+      .addCase(logoutThunk.rejected, (state, action) => {
+        state.error = action.payload;
       })
 
-      .addCase(logoutThunk.rejected, (state, action) => {
+      .addCase(refreshUser.rejected, (state, action) => {
         state.error = action.payload;
       });
   },
